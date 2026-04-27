@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZeroTrace Command Center</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Courier New', monospace; background: #0a0a0f; color: #00ff00; display: flex; height: 100vh; }
+  .panel { padding: 20px; overflow-y: auto; border-right: 1px solid #1a3a1a; }
+  .panel-left { width: 30%; background: #0d0d14; }
+  .panel-right { width: 70%; background: #0a0a0f; }
+  h2 { font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #00ff00; padding-bottom: 10px; }
+  .card { background: #111122; border: 1px solid #1a3a1a; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+  .card-title { font-size: 14px; color: #00ccff; margin-bottom: 8px; }
+  .card-value { font-size: 13px; color: #00ff00; word-break: break-all; }
+  .log-entry { font-size: 11px; color: #008800; margin: 4px 0; border-left: 2px solid #00ff00; padding-left: 10px; }
+  .log-time { color: #00ccff; }
+  #map { height: 300px; border: 1px solid #1a3a1a; border-radius: 8px; margin-bottom: 15px; }
+  .badge { display: inline-block; padding: 3px 8px; background: #003300; color: #00ff00; border-radius: 4px; font-size: 11px; margin: 2px; }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+<!-- PANEL KIRI: Target -->
+<div class="panel panel-left">
+  <h2>🎯 TARGET DATABASE</h2>
+  <div class="card">
+    <div class="card-title">Target Alpha</div>
+    <div class="card-value">Nama: Riska JM</div>
+    <div class="card-value">Email: riskajm32@gmail.com</div>
+    <div class="card-value">HP: 085864457028</div>
+    <div class="card-value">HP 2: 085268902105</div>
+    <div class="card-value" style="margin-top: 8px;">
+      <span class="badge">IG: __13bbe</span>
+      <span class="badge">IG: rzkzlw</span>
+      <span class="badge">TT: __13bbe</span>
+      <span class="badge">Twitter: riskajm32</span>
+      <span class="badge">Saweria: riskajm</span>
+    </div>
+  </div>
+  
+  <h2>📡 LIVE EVENTS</h2>
+  <div id="live-events">
+    <p class="log-entry"><span class="log-time">Menunggu...</span> Belum ada target yang terhubung</p>
+  </div>
+</div>
+
+<!-- PANEL KANAN: Dashboard Intelijen -->
+<div class="panel panel-right">
+  <h2>📍 LOKASI TERAKHIR TARGET</h2>
+  <div id="map"></div>
+  
+  <h2>📂 DATA EKSTRAKSI</h2>
+  <div class="card">
+    <div class="card-title">Device Info</div>
+    <div class="card-value" id="device-info">Menunggu data...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Sosial Media Terdeteksi</div>
+    <div class="card-value" id="socmed-info">
+      Instagram: __13bbe, rzkzlw<br>
+      TikTok: __13bbe<br>
+      Twitter: riskajm32<br>
+      Saweria: riskajm
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Log Koneksi Target</div>
+    <div id="connection-log">
+      <p class="log-entry"><span class="log-time">[SISTEM]</span> Dashboard siap. Menunggu target klik JM Store...</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Inisialisasi Peta
+var map = L.map('map').setView([-2.5, 118], 5);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+var markers = [];
+
+// Fungsi untuk menambah titik di peta
+function addPoint(lat, lon, info) {
+  var marker = L.marker([lat, lon]).addTo(map);
+  marker.bindPopup(info).openPopup();
+  markers.push(marker);
+  map.setView([lat, lon], 13);
+  
+  // Update live events
+  var eventsDiv = document.getElementById('live-events');
+  var now = new Date().toLocaleTimeString('id-ID');
+  eventsDiv.innerHTML = '<p class="log-entry"><span class="log-time">[' + now + ']</span> Target terdeteksi di ' + info + ' (Lat: ' + lat + ', Lon: ' + lon + ')</p>' + eventsDiv.innerHTML;
+  
+  // Update connection log
+  var logDiv = document.getElementById('connection-log');
+  logDiv.innerHTML = '<p class="log-entry"><span class="log-time">[' + now + ']</span> Target terhubung! Lokasi: ' + info + '</p>' + logDiv.innerHTML;
+  
+  // Update device info
+  document.getElementById('device-info').innerHTML = 'IP: ' + (info.match(/IP: ([\d.]+)/) ? info.match(/IP: ([\d.]+)/)[1] : 'N/A') + '<br>Koord: ' + lat + ', ' + lon;
+}
+
+// Simulasi: begini nanti kalau target klik JM Store
+setTimeout(function() {
+  // Ganti koordinat sesuai lokasi target nanti
+  addPoint(-7.25, 112.75, "Surabaya - IP: 182.253.x.x - Provider: Indosat");
+}, 3000);
+
+console.log('[ZeroTrace] Dashboard siap. Menunggu koneksi dari JM Store...');
+</script>
+</body>
+</html>
